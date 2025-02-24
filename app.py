@@ -1,7 +1,7 @@
 import os
 import streamlit as st
 
-from config import Config  # Import the Config class
+from src.config import Config  # Import the Config class
 from pages2.investigation_page import investigation_page  # Import the Investigation page logic
 from pages2.support_page import support_page  # Import the Support page logic
 from pages2.support_page_2 import support_page_2  # Import the Support page logic
@@ -12,6 +12,8 @@ from src.utils import reset_page_language
 # Initialize configuration
 config = Config("config.yaml")
 
+# set attributes
+config.set_attributes()
 
 # set browser
 config.set_browser_search("tavily")

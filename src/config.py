@@ -1,5 +1,7 @@
 import yaml
 
+from agent.agent import set_up_agent
+
 
 class Config:
     _instance = None  # Class-level variable to store the singleton instance
@@ -16,12 +18,19 @@ class Config:
                 cls._instance.llm_providers = cls._instance.config["llm_providers"]
                 cls._instance.report_types = cls._instance.config["report_types"]
                 cls._instance.browsers = cls._instance.config["browsers"]
+                cls._instance.personalities = cls._instance.config["personalities"]
                 cls._instance.translations = None    
                 cls._instance.language = None
+                cls._instance.agent = None
                 cls._instance.llm = None
                 cls._instance.browser_search = None
                 cls._instance.researcher = None
+                # attributes
+                cls._instance.mock = None
         return cls._instance
+
+    def set_attributes(self):
+        self.mock = self.config["mock"]
 
     def set_browser_search(self, browser_name):
         self.browser_type = self.browsers[browser_name]
@@ -52,3 +61,20 @@ class Config:
         self.file_translations = self.config["translations"]["file_translations"]
         with open(self.file_translations, "r") as f:
             self.translations = yaml.safe_load(f)[language]
+
+    def set_up_agent(self):
+        # read txt file from path
+        file = open(self.personalities["personality_main_agent"], "r")
+        self.personality_main_agent = file.read(); file.close()
+        file = open(self.personalities["personality_researcher"], "r")
+        self.personality_researcher = file.read(); file.close()
+        file = open(self.personalities["personality_coder"], "r")
+        self.personality_coder = file.read(); file.close()
+
+        self.d_personalities = {
+            "main_agent": self.personality_main_agent,
+            "researcher": self.personality_researcher,
+            "coder": self.personality_coder
+        }
+
+        self.agent = set_up_agent(self)
