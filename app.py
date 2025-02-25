@@ -13,10 +13,10 @@ print(st.session_state)
 print(st.secrets)
 
 # Initialize configuration
-if "OPENAI_API_KEY" in st.session_state:
+if "OPENAI_API_KEY" in st.secrets:
     config = Config("config.yaml", \
-                    st.session_state.OPENAI_API_KEY, \
-                    st.session_state.TAVILY_API_KEY)
+                    st.secrets["OPENAI_API_KEY"], \
+                    st.secrets["TAVILY_API_KEY"])
 else:
     config = Config("config_local.yaml")
 
@@ -54,16 +54,9 @@ if language != st.session_state["language"]:
 # set search agent
 if "search_agent" not in st.session_state:
     config.set_researcher()
+    os.environ['OPENAI_API_KEY'] = config.researcher["openai_api_key"] 
+    os.environ['TAVILY_API_KEY'] = config.researcher["tavily_api_key"]
     st.session_state["search_agent"] = "config.researcher"
-    if "OPENAI_API_KEY" in st.session_state:
-        os.environ["OPENAI_API_KEY"] = st.session_state.OPENAI_API_KEY
-    else: 
-        os.environ['OPENAI_API_KEY'] = config.researcher["openai_api_key"] 
-    if "TAVILY_API_KEY" in st.session_state:
-        os.environ["TAVILY_API_KEY"] = st.session_state.TAVILY_API_KEY
-    else:
-        os.environ['TAVILY_API_KEY'] = config.researcher["tavily_api_key"]
-
 
 print(os.environ['OPENAI_API_KEY'])
 print(os.environ['TAVILY_API_KEY'])
