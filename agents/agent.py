@@ -23,7 +23,7 @@ def set_up_agent(config):
     
     llm = ChatOpenAI(model="gpt-3.5-turbo-0125", 
         temperature=0, 
-        api_key=config.llm["api_key"])    
+        api_key=config.llm["api_key"])  
 
     # Tools
     @tool
@@ -68,13 +68,23 @@ def set_up_agent(config):
     run_researcher.__doc__ = config.d_personalities["researcher"]
     run_coder.__doc__ = config.d_personalities["coder"]
 
+    main_agent_personality = config.d_personalities["main_agent"]
+    prompt = ChatPromptTemplate.from_messages(
+        [
+            ("system", main_agent_personality),
+            MessagesPlaceholder(variable_name="chat_history"),
+            ("user", "{input}"),
+            MessagesPlaceholder(variable_name="agent_scratchpad"),
+        ]
+    )
+
     tools = [
         run_researcher,
         run_coder
     ]
     
     # create agent
-    agent = create_agent(tools, llm, plan="default")
+    agent = create_openai_functions_agent(llm, tools, prompt)
 
     agent = AgentExecutor(agent=agent, tools=tools)
 

@@ -1,6 +1,6 @@
 import yaml
 
-from agent.agent import set_up_agent
+from agents.agent import set_up_agent
 
 
 class Config:

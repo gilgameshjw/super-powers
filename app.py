@@ -43,13 +43,19 @@ language = st.sidebar.text_input(
 if language != st.session_state["language"]:
     reset_page_language(config, language)
 
-
+# set search agent
 if "search_agent" not in st.session_state:
     config.set_researcher()
     st.session_state["search_agent"] = "config.researcher"
     os.environ['OPENAI_API_KEY'] = config.researcher["openai_api_key"] 
     os.environ['TAVILY_API_KEY'] = config.researcher["tavily_api_key"]
 
+if "agent" not in st.session_state:
+    # set agent
+    print(1)
+    config.set_up_agent()
+    print(2)
+    st.session_state["agent"] = "config.agent"
 
 # Top navigation bar
 pages = ["Investigation", "Support us", "Donate"]
