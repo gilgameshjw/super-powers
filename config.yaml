@@ -1,0 +1,35 @@
+
+mock: true
+
+llm_providers:
+  openai:
+    api_key: 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
+    model_version: "gpt-3.5-turbo-0125" # "gpt-4o"
+  claude:
+    api_key: "your_claude_api_key"
+    model_version: "claude-3.5"
+  deepseek:
+    api_key: "your_deepseek_api_key"
+    model_version: "deepseek-v3"
+
+report_types:
+  list:
+    - research_report
+
+translations:
+  file_translations: resources/site_translations.yaml
+
+browsers:
+  tavily:
+    api_key: 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
+
+
+
+agent:
+  memory_depth: 10
+  model_llm: "openai"
+  personalities:
+    personality_main_agent: prompts/personality_main_agent.txt
+    
+    personality_coder: prompts/personality_coder.txt
+    personality_researcher: prompts/personality_researcher.txt
