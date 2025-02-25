@@ -5,6 +5,8 @@ import streamlit as st
 from openai import OpenAI
 import asyncio
 
+from src.background import set_static_background
+
 # from tools.researcher import run_researcher
 # from agents.agent import create_agent, generate_response_agent
 
@@ -60,15 +62,15 @@ def handle_file_upload():
 
 
 
-def run_agent_answer(config, prompt):
+def run_agent_answer(config, prompt, chat_history):
     """Generate the response from the agent"""
     # Generate assistant response
     # response = None
-    with st.chat_message("assistant", avatar="resources/images/scientist_0.png"):
+    with st.chat_message("assistant", avatar="./resources/images/scientist_0.png"):
         response = generate_response_agent_w_spinner(
             config.agent,
             prompt,
-            chat_history=st.session_state.messages
+            chat_history=chat_history
         )
         print("response agent:", response)
         # Stream the response
@@ -80,19 +82,23 @@ def run_agent_answer(config, prompt):
 
 # Chat
 def chat(config):
+
+
+    # Set the static background image
+    set_static_background("./resources/images/background_space_savannah.png")
+
     # Set up the title and chat history
-    st.title("JAJA PAS GPT")
-    if "messages" not in st.session_state:
-        st.session_state.messages = []
-        response = run_agent_answer(config, "Introduce yourself and what your tools are.")
-        st.session_state.messages.append({"role": "assistant", "content": response})
+    st.title("JairGPT")
 
     # Display chat history
-    for message in st.session_state.messages:
-        with st.chat_message(message["role"]):
-            st.markdown(message["content"])
-
-    
+    if "messages" in st.session_state:
+        for message in st.session_state.messages[:config.memory_depth]:
+            with st.chat_message(message["role"]):
+                st.markdown(message["content"])
+    else:
+        st.session_state.messages = []
+        response = run_agent_answer(config, "Introduce yourself and what your tools are.", [])
+        st.session_state.messages.append({"role": "assistant", "content": response})
 
     # Chat input
     #with st.chat_message("user", avatar="resources/images/user_0.png"):
@@ -108,7 +114,7 @@ def chat(config):
             st.markdown(prompt)
 
         # run_agent_answer()
-        response = run_agent_answer(config, prompt)
+        response = run_agent_answer(config, prompt, st.session_state.messages[:config.memory_depth])
 
         # Add assistant message to the chat history
         st.session_state.messages.append({"role": "assistant", "content": response})

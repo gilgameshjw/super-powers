@@ -37,6 +37,7 @@ class Config:
                 # agent
                 cls._instance.memory_depth = None
                 cls._instance.agent_llm = None
+
         return cls._instance
 
     def set_attributes(self):
@@ -84,10 +85,17 @@ class Config:
         self.personality_researcher = file.read(); file.close()
         file = open(self.agent_parameters["personalities"]["personality_coder"], "r")
         self.personality_coder = file.read(); file.close()
+        file = open(self.agent_parameters["personalities"]["personality_psychologist"], "r")
+        self.personality_psychologist = file.read(); file.close()
+        file = open(self.agent_parameters["personalities"]["personality_sexologist"], "r")
+        self.personality_sexologist = file.read(); file.close()
+        
         # dictionary
         self.d_personalities = {
             "main_agent": self.personality_main_agent,
             "researcher": self.personality_researcher,
-            "coder": self.personality_coder
+            "coder": self.personality_coder,
+            "psychologist": self.personality_psychologist,
+            "sexologist": self.personality_sexologist
         }
         self.agent = set_up_agent(self)

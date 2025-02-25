@@ -29,7 +29,10 @@ class FlexibleOutputAgentExecutor(AgentExecutor):
         
         # If the output is a string, wrap it in a dictionary with the "response" key
         elif isinstance(raw_output, str):
-            return {"response": raw_output}
+            return {
+                "response": raw_output,
+                "avatar": "resources/images/giraffe_0.png"
+            }
         
         # Fallback for unexpected output types
         else:
@@ -74,7 +77,8 @@ def set_up_agent(config):
             "research_metadata": d_research,
             "response": response,
             "agent": "researcher",
-            "file_data": "report_file_path"     
+            "avatar": "resources/images/scientist_0.png",
+            "file_data": report_file_path     
         }
 
     @tool
@@ -85,14 +89,40 @@ def set_up_agent(config):
 
         return {
             "response": result.content,
-            "agent": "coder"
+            "agent": "coder",
+            "avatar": "resources/images/coder_0.png",
         }
-        return result.content
+    
+    @tool
+    def tool_psychologist(query: str) -> str:
+        """ docstring """
+        prompt = f"{query}"
+        result = llm.invoke(prompt)
+
+        return {
+            "response": result.content,
+            "agent": "psychologist",
+            "avatar": "resources/images/psychologist_0.png",
+        }
+
+    @tool
+    def tool_sexologist(query: str) -> str:
+        """ docstring """
+        prompt = f"{query}"
+        result = llm.invoke(prompt)
+
+        return {
+            "response": result.content,
+            "agent": "sexologist",
+            "avatar": "resources/images/sexologist_0.png",
+        }
 
 
     # Set up tools
     tool_researcher.__doc__ = config.d_personalities["researcher"]
     tool_coder.__doc__ = config.d_personalities["coder"]
+    tool_psychologist.__doc__ = config.d_personalities["psychologist"]
+    tool_sexologist.__doc__ = config.d_personalities["sexologist"]
 
     main_agent_personality = config.d_personalities["main_agent"]
     prompt = ChatPromptTemplate.from_messages(
@@ -106,7 +136,9 @@ def set_up_agent(config):
 
     tools = [
         tool_researcher,
-        tool_coder
+        tool_coder,
+        tool_psychologist,
+        tool_sexologist
     ]
     
     # create agent
