@@ -14,9 +14,26 @@ from langchain.agents import create_openai_functions_agent
 from tools.researcher import run_researcher
 
 
-prompt_agent_personality = """
-    You are a friendly conversational, smart agent.
-"""
+
+class FlexibleOutputAgentExecutor(AgentExecutor):
+    """
+        Ensure a given format for the agent
+    """
+    def _call(self, inputs: dict) -> dict:
+        # Call the original AgentExecutor
+        raw_output = super()._call(inputs)
+        
+        # Check if the output is already a dictionary
+        if isinstance(raw_output, dict):
+            return raw_output  # Return as-is if it's a dictionary
+        
+        # If the output is a string, wrap it in a dictionary with the "response" key
+        elif isinstance(raw_output, str):
+            return {"response": raw_output}
+        
+        # Fallback for unexpected output types
+        else:
+            return {"response": "Unexpected output format."}
 
 
 def set_up_agent(config):
@@ -27,8 +44,10 @@ def set_up_agent(config):
 
     # Tools
     @tool
-    def run_researcher(query: str) -> str:
+    def tool_researcher(query: str) -> str:
         """ docstring """
+        report_type = "research_report"
+
         research_report, research_costs, research_time = run_researcher(prompt, report_type, config.mock)
         response = "find research below" #research_report[:1000]
 
@@ -57,16 +76,21 @@ def set_up_agent(config):
         }
 
     @tool
-    def run_coder (query: str) -> str:
+    def tool_coder (query: str) -> str:
         """ docstring """
         prompt = f"{query}"
         result = llm.invoke(prompt)
+
+        return {
+            "response": result.content,
+            "agent": "coder"
+        }
         return result.content
 
 
     # Set up tools
-    run_researcher.__doc__ = config.d_personalities["researcher"]
-    run_coder.__doc__ = config.d_personalities["coder"]
+    tool_researcher.__doc__ = config.d_personalities["researcher"]
+    tool_coder.__doc__ = config.d_personalities["coder"]
 
     main_agent_personality = config.d_personalities["main_agent"]
     prompt = ChatPromptTemplate.from_messages(
@@ -79,24 +103,13 @@ def set_up_agent(config):
     )
 
     tools = [
-        run_researcher,
-        run_coder
+        tool_researcher,
+        tool_coder
     ]
     
     # create agent
     agent = create_openai_functions_agent(llm, tools, prompt)
 
-    agent = AgentExecutor(agent=agent, tools=tools)
+    agent = FlexibleOutputAgentExecutor(agent=agent, tools=tools)
 
     return agent
-
-
-def generate_response_agent(agent, user_input, chat_history=[]):
-    """
-    Generate the response from the agent
-    """
-    data = {"chat_history": chat_history, "input": user_input}
-    output = agent.invoke(data)
-    chat_history.append(user_input)
-    chat_history.append(output["output"])
-    return output["output"]

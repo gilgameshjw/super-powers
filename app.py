@@ -2,7 +2,7 @@ import os
 import streamlit as st
 
 from src.config import Config  # Import the Config class
-from pages2.investigation_page import investigation_page  # Import the Investigation page logic
+from pages2.chat import chat  # Import the Investigation page logic
 from pages2.support_page import support_page  # Import the Support page logic
 from pages2.support_page_2 import support_page_2  # Import the Support page logic
 from src.utils import reset_page_language
@@ -61,7 +61,7 @@ selected_page = st.selectbox("Pages", pages, index=0)
 
 # Load the selected page
 if selected_page == "Investigation":
-    investigation_page(config)  # Call the Investigation page logic
+    chat(config)  # Call the Investigation page logic
     
 elif selected_page == "Support us":
     support_page(config)  # Call the Support page logic
