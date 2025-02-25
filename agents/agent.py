@@ -38,9 +38,11 @@ class FlexibleOutputAgentExecutor(AgentExecutor):
 
 def set_up_agent(config):
     
-    llm = ChatOpenAI(model="gpt-3.5-turbo-0125", 
+    llm = ChatOpenAI(
+        model="gpt-3.5-turbo-0125", 
         temperature=0, 
-        api_key=config.llm["api_key"])  
+        api_key=config.llm["api_key"]
+    )  
 
     # Tools
     @tool

@@ -5,14 +5,8 @@ import streamlit as st
 from openai import OpenAI
 import asyncio
 
-from tools.researcher import run_researcher
+# from tools.researcher import run_researcher
 # from agents.agent import create_agent, generate_response_agent
-
-
-# Function to simulate a spinner while waiting for run_researcher
-def run_with_spinner(prompt, report_type, config):
-    with st.spinner("Generating research report... Please wait."):
-        return run_researcher(prompt, report_type, config.mock)
 
 
 def generate_response_agent_w_spinner(agent, user_input, chat_history=[]):
@@ -65,6 +59,7 @@ def handle_file_upload():
             st.markdown(agent_response)
 
 
+
 def run_agent_answer(config, prompt):
     """Generate the response from the agent"""
     # Generate assistant response
@@ -75,6 +70,7 @@ def run_agent_answer(config, prompt):
             prompt,
             chat_history=st.session_state.messages
         )
+        print("response agent:", response)
         # Stream the response
         #st.write("Streaming response:")
         asyncio.run(stream_to_streamlit(response))  # Stream the response asynchronously

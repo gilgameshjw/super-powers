@@ -18,7 +18,8 @@ class Config:
                 cls._instance.llm_providers = cls._instance.config["llm_providers"]
                 cls._instance.report_types = cls._instance.config["report_types"]
                 cls._instance.browsers = cls._instance.config["browsers"]
-                cls._instance.personalities = cls._instance.config["personalities"]
+                # cls._instance.personalities = cls._instance.config["personalities"]
+                cls._instance.agent_parameters = cls._instance.config["agent"]
                 cls._instance.translations = None    
                 cls._instance.language = None
                 cls._instance.agent = None
@@ -27,6 +28,9 @@ class Config:
                 cls._instance.researcher = None
                 # attributes
                 cls._instance.mock = None
+                # agent
+                cls._instance.memory_depth = None
+                cls._instance.agent_llm = None
         return cls._instance
 
     def set_attributes(self):
@@ -63,18 +67,20 @@ class Config:
             self.translations = yaml.safe_load(f)[language]
 
     def set_up_agent(self):
+        # parameters
+        self.memory_depth = self.agent_parameters["memory_depth"]
+        self.agent_llm = self.llm # self.agent_parameters["model_llm"]
         # read txt file from path
-        file = open(self.personalities["personality_main_agent"], "r")
+        file = open(self.agent_parameters["personalities"]["personality_main_agent"], "r")
         self.personality_main_agent = file.read(); file.close()
-        file = open(self.personalities["personality_researcher"], "r")
+        file = open(self.agent_parameters["personalities"]["personality_researcher"], "r")
         self.personality_researcher = file.read(); file.close()
-        file = open(self.personalities["personality_coder"], "r")
+        file = open(self.agent_parameters["personalities"]["personality_coder"], "r")
         self.personality_coder = file.read(); file.close()
-
+        # dictionary
         self.d_personalities = {
             "main_agent": self.personality_main_agent,
             "researcher": self.personality_researcher,
             "coder": self.personality_coder
         }
-
         self.agent = set_up_agent(self)
