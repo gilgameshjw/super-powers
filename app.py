@@ -10,6 +10,7 @@ from src.utils import reset_page_language
 
 
 print(st.session_state)
+print(st.secrets)
 
 # Initialize configuration
 if "OPENAI_API_KEY" in st.session_state:
