@@ -6,7 +6,11 @@ from agents.agent import set_up_agent
 class Config:
     _instance = None  # Class-level variable to store the singleton instance
 
-    def __new__(cls, config_path=None):
+    def __new__(cls, 
+                config_path=None,
+                openai_api_key=None,
+                tavily_api_key=None
+    ):
         """Ensure only one instance of Config is created."""
         if cls._instance is None:
             cls._instance = super(Config, cls).__new__(cls)
@@ -14,11 +18,13 @@ class Config:
             if config_path:
                 with open(config_path, "r") as f:
                     cls._instance.config = yaml.safe_load(f)
-                
+                # keys
+                cls._instance.openai_api_key = openai_api_key
+                cls._instance.tavily_api_key = tavily_api_key
+                # main attributes
                 cls._instance.llm_providers = cls._instance.config["llm_providers"]
                 cls._instance.report_types = cls._instance.config["report_types"]
                 cls._instance.browsers = cls._instance.config["browsers"]
-                # cls._instance.personalities = cls._instance.config["personalities"]
                 cls._instance.agent_parameters = cls._instance.config["agent"]
                 cls._instance.translations = None    
                 cls._instance.language = None
@@ -38,7 +44,7 @@ class Config:
 
     def set_browser_search(self, browser_name):
         self.browser_type = self.browsers[browser_name]
-        self.browser_api_key = self.browsers[browser_name]["api_key"]
+        self.browser_api_key = self.tavily_api_key if self.tavily_api_key else self.browsers[browser_name]["api_key"]
         self.browser_search = {
             "type": self.browser_type,
             "api_key": self.browser_api_key
@@ -46,7 +52,7 @@ class Config:
 
     def set_llm_provider(self, provider_name):
         self.llm_provider = self.llm_providers[provider_name]
-        self.api_key = self.config["llm_providers"][provider_name]["api_key"]
+        self.api_key = self.openai_api_key if self.openai_api_key else self.config["llm_providers"][provider_name]["api_key"]
         self.model_version = self.llm_provider["model_version"]
         self.llm = {
             "api_key": self.api_key,
@@ -54,6 +60,7 @@ class Config:
         }
 
     def set_researcher(self):
+
         self.researcher = {
             "openai_api_key": self.llm["api_key"], 
             "tavily_api_key": self.browser_search["api_key"]

@@ -10,7 +10,12 @@ from src.utils import reset_page_language
 
 
 # Initialize configuration
-config = Config("config.yaml")
+if "OPENAI_API_KEY" in st.session_state:
+    config = Config("config.yaml", \
+                    st.session_state.OPENAI_API_KEY, \
+                    st.session_state.TAVILY_API_KEY)
+else:
+    config = Config("config.yaml")
 
 # set attributes
 config.set_attributes()
@@ -47,8 +52,14 @@ if language != st.session_state["language"]:
 if "search_agent" not in st.session_state:
     config.set_researcher()
     st.session_state["search_agent"] = "config.researcher"
-    os.environ['OPENAI_API_KEY'] = config.researcher["openai_api_key"] 
-    os.environ['TAVILY_API_KEY'] = config.researcher["tavily_api_key"]
+    if "OPENAI_API_KEY" in st.session:
+        os.environ["OPENAI_API_KEY"] = st.session.OPENAI_API_KEY
+    else: 
+        os.environ['OPENAI_API_KEY'] = config.researcher["openai_api_key"] 
+    if "TAVILY_API_KEY" in st.session:
+        os.environ["TAVILY_API_KEY"] = st.session.TAVILY_API_KEY
+    else:
+        os.environ['TAVILY_API_KEY'] = config.researcher["tavily_api_key"]
 
 if "agent" not in st.session_state:
     # set agent
