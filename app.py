@@ -9,6 +9,8 @@ from src.utils import reset_page_language
 
 
 
+print(st.session_state)
+
 # Initialize configuration
 if "OPENAI_API_KEY" in st.session_state:
     config = Config("config.yaml", \
