@@ -15,7 +15,7 @@ if "OPENAI_API_KEY" in st.session_state:
                     st.session_state.OPENAI_API_KEY, \
                     st.session_state.TAVILY_API_KEY)
 else:
-    config = Config("config.yaml")
+    config = Config("config_local.yaml")
 
 # set attributes
 config.set_attributes()
