@@ -52,9 +52,7 @@ if "search_agent" not in st.session_state:
 
 if "agent" not in st.session_state:
     # set agent
-    print(1)
     config.set_up_agent()
-    print(2)
     st.session_state["agent"] = "config.agent"
 
 # Top navigation bar
