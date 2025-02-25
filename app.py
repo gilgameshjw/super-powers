@@ -9,16 +9,20 @@ from src.utils import reset_page_language
 
 
 
-print(st.session_state)
-print(st.secrets)
-
 # Initialize configuration
-if "OPENAI_API_KEY" in st.secrets:
-    config = Config("config.yaml", \
-                    st.secrets["OPENAI_API_KEY"], \
-                    st.secrets["TAVILY_API_KEY"])
+config = None
+secrets_path = ".streamlit/secrets.toml"
+if os.path.exists(secrets_path):
+    try:
+        config = Config("config.yaml", \
+                        st.secrets["OPENAI_API_KEY"], \
+                        st.secrets["TAVILY_API_KEY"])
+    except Exception as e:
+        print(e)
+        
 else:
     config = Config("config_local.yaml")
+
 
 # set attributes
 config.set_attributes()
