@@ -25,7 +25,15 @@ class FlexibleOutputAgentExecutor(AgentExecutor):
         
         # Check if the output is already a dictionary
         if isinstance(raw_output, dict):
-            return raw_output  # Return as-is if it's a dictionary
+            if "avatar" in raw_output:
+                print("DBG: raw_output is a dictionary")
+                return raw_output  # Return as-is if it's a dictionary
+            else:
+                print("DBG2: raw_output has no avatar")
+                return {
+                    "response": raw_output["output"],
+                    "avatar": "resources/images/giraffe_0.png"
+                }
         
         # If the output is a string, wrap it in a dictionary with the "response" key
         elif isinstance(raw_output, str):
@@ -36,7 +44,10 @@ class FlexibleOutputAgentExecutor(AgentExecutor):
         
         # Fallback for unexpected output types
         else:
-            return {"response": "Unexpected output format."}
+            return {
+                "response": "Unexpected output format.",
+                "avatar": "resources/images/giraffe_0.png"
+            }
 
 
 def set_up_agent(config):
@@ -110,6 +121,10 @@ def set_up_agent(config):
         """ docstring """
         prompt = f"{query}"
         result = llm.invoke(prompt)
+
+        print("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@")
+        print("Sexologist response:")
+        print("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@")
 
         return {
             "response": result.content,

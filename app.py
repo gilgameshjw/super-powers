@@ -62,9 +62,6 @@ if "search_agent" not in st.session_state:
     os.environ['TAVILY_API_KEY'] = config.researcher["tavily_api_key"]
     st.session_state["search_agent"] = "config.researcher"
 
-print(os.environ['OPENAI_API_KEY'])
-print(os.environ['TAVILY_API_KEY'])
-
 
 if "agent" not in st.session_state:
     # set agent
