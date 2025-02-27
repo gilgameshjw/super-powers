@@ -99,7 +99,7 @@ def tool_researcher(llm: ChatOpenAI, query: str) -> str:
 
     return {
         "research_metadata": d_research,
-        "response": response,
+        "output": response,
         "agent": "researcher",
         "file_data": report_file_path     
     }

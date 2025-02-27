@@ -70,11 +70,11 @@ if "agent" not in st.session_state:
     st.session_state["agent"] = "config.agent"
 
 # Top navigation bar
-pages = ["Investigation", "Support us", "Donate"]
+pages = ["Chat", "Support us", "Donate"]
 selected_page = st.selectbox("Pages", pages, index=0)
 
 # Load the selected page
-if selected_page == "Investigation":
+if selected_page == "Chat":
     chat(config)  # Call the Investigation page logic
     
 elif selected_page == "Support us":

@@ -38,6 +38,7 @@ class Config:
                 cls._instance.mock = None
                 # agent
                 cls._instance.memory_depth = None
+                cls._instance.thinking_depth = None
                 cls._instance.agent_llm = None
                 cls._instance.d_personalities = None
                 cls._instance.d_avatars = None
@@ -81,6 +82,7 @@ class Config:
     def set_up_agent(self):
         # parameters
         self.memory_depth = self.agent_parameters["memory_depth"]
+        self.thinking_depth = self.agent_parameters["thinking_depth"]
         self.agent_llm = self.llm # self.agent_parameters["model_llm"]
         # read txt file from path
         

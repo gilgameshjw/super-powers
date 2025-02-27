@@ -7,6 +7,6 @@ def tool_psychologist(llm: ChatOpenAI, query: str) -> str:
     result = llm.invoke(prompt)
 
     return {
-        "response": result.content,
+        "output": result.content,
         "agent": "psychologist",
     }

@@ -25,7 +25,8 @@ browsers:
 
 
 agent:
-  memory_depth: 10
+  memory_depth: 5
+  thinking_depth: 5
   model_llm: "openai"
   personalities:
     main_agent: 
@@ -47,3 +48,7 @@ agent:
     sexologist:
       personality: prompts/personality_sexologist.txt
       avatar: resources/images/sexologist_0.png
+
+    drdoc:
+      personality: prompts/personality_drdoc.txt
+      avatar: resources/images/drdoc_0.png

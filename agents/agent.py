@@ -8,6 +8,7 @@ from agents.tools.researcher import tool_researcher
 from agents.tools.coder import tool_coder
 from agents.tools.psychologist import tool_psychologist
 from agents.tools.sexologist import tool_sexologist
+from agents.tools.drdoc import tool_drdoc
 
 from agents.agent_executor import AgentExecutor
 
@@ -44,7 +45,13 @@ def set_up_agent(config):
         description=config.d_agent_personalities["coder"]
     )
 
-    tools = [psychologist_tool, sexologist_tool, researcher_tool, coder_tool]
+    drdoc_tool = Tool(
+        name="DrDoc",
+        func=lambda query: tool_drdoc(llm, query),
+        description=config.d_agent_personalities["drdoc"]
+    )
+
+    tools = [psychologist_tool, sexologist_tool, researcher_tool, coder_tool, drdoc_tool]
     # Initialize the agent
     return AgentExecutor(
             llm=llm, \
@@ -52,5 +59,5 @@ def set_up_agent(config):
             agent_personality=config.d_agent_personalities["main_agent"], \
             agent_avatars=config.d_agent_avatars, \
             verbose=True, \
-            maximal_steps=5
+            maximal_steps=config.thinking_depth
         )

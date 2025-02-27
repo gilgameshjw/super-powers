@@ -1,12 +1,12 @@
 
 from langchain.chat_models import ChatOpenAI
-    
-def tool_sexologist(llm: ChatOpenAI, query: str) -> str:
-    """ you are a sexologist """
+
+def tool_drdoc (llm: ChatOpenAI, query: str) -> str:
+    """ you are a automation helper in medical space """
     prompt = f"{query}"
     result = llm.invoke(prompt)
 
     return {
         "output": result.content,
-        "agent": "sexologist",
+        "agent": "drdoc",
     }

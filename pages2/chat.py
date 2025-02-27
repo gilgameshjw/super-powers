@@ -61,7 +61,6 @@ def handle_file_upload():
             st.markdown(agent_response)
 
 
-
 def run_agent_answer(config, prompt, chat_history):
     """Generate the response from the agent"""
     # Generate assistant response
@@ -72,8 +71,41 @@ def run_agent_answer(config, prompt, chat_history):
             chat_history=chat_history
         )
     with st.chat_message("assistant", avatar=response["avatar"]):
-        asyncio.run(stream_to_streamlit(response["output"]))  # Stream the response asynchronously
+       asyncio.run(stream_to_streamlit(response["output"]))  # Stream the response asynchronously
+
     return response
+
+"""
+EPIC FAIL TO CHANGE AVATAR SHAPE
+
+def display_helper(role: str, text: str, avatar_path: str, width: int=150):
+    " " "Display a helper message with an image " " "
+    with st.chat_message(role):
+        # Display the image larger using st.image
+        st.image(avatar_path, width=width)  # Adjust width as needed
+        st.markdown(text)
+
+
+async def display_helper_async(role: str, text: str, avatar_path: str, width: int = 150):
+    " " "
+    Display a helper message with an image and stream text asynchronously.
+    
+    Args:
+        role (str): The role of the chat message ("user" or "assistant").
+        text (str): The text content to display.
+        avatar_path (str): Path to the avatar image.
+        width (int): Width of the avatar image.
+    " " "
+    with st.chat_message(role):
+        # Display the image larger using st.image
+        st.image(avatar_path, width=width)  # Adjust width as needed
+        
+        # Stream the text asynchronously
+        if isinstance(text, str):
+            await stream_to_streamlit(text)
+        else:
+            st.markdown(text)
+"""
 
 
 
@@ -92,6 +124,7 @@ def chat(config):
         for message in st.session_state.messages[:config.memory_depth]:
             with st.chat_message(message["role"], avatar=message["avatar"]):
                 st.markdown(message["content"])
+            #display_helper(message["role"], message["content"], message["avatar"])
     else:
         st.session_state.messages = []
         response = run_agent_answer(config, "Introduce yourself and what your tools are.", [])
@@ -105,8 +138,10 @@ def chat(config):
     if prompt:
         # Add user message to the chat history
         st.session_state.messages.append({"role": "user", "content": prompt, "avatar": "./resources/images/user_0.png"})
+        
         with st.chat_message("user", avatar="./resources/images/user_0.png"):
             st.markdown(prompt)
+        #display_helper("user", prompt, "./resources/images/user_0.png")
 
         # run_agent_answer()
         response = run_agent_answer(config, prompt, st.session_state.messages[:config.memory_depth])
