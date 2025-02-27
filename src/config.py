@@ -16,6 +16,7 @@ class Config:
             cls._instance = super(Config, cls).__new__(cls)
             # Initialize the instance only once
             if config_path:
+                cls._instance.config = None
                 with open(config_path, "r") as f:
                     cls._instance.config = yaml.safe_load(f)
                 # keys
@@ -26,6 +27,7 @@ class Config:
                 cls._instance.report_types = cls._instance.config["report_types"]
                 cls._instance.browsers = cls._instance.config["browsers"]
                 cls._instance.agent_parameters = cls._instance.config["agent"]
+                cls._instance.agent_personalities = cls._instance.config["agent"]["personalities"]
                 cls._instance.translations = None    
                 cls._instance.language = None
                 cls._instance.agent = None
@@ -37,6 +39,8 @@ class Config:
                 # agent
                 cls._instance.memory_depth = None
                 cls._instance.agent_llm = None
+                cls._instance.d_personalities = None
+                cls._instance.d_avatars = None
 
         return cls._instance
 
@@ -79,23 +83,14 @@ class Config:
         self.memory_depth = self.agent_parameters["memory_depth"]
         self.agent_llm = self.llm # self.agent_parameters["model_llm"]
         # read txt file from path
-        file = open(self.agent_parameters["personalities"]["personality_main_agent"], "r")
-        self.personality_main_agent = file.read(); file.close()
-        file = open(self.agent_parameters["personalities"]["personality_researcher"], "r")
-        self.personality_researcher = file.read(); file.close()
-        file = open(self.agent_parameters["personalities"]["personality_coder"], "r")
-        self.personality_coder = file.read(); file.close()
-        file = open(self.agent_parameters["personalities"]["personality_psychologist"], "r")
-        self.personality_psychologist = file.read(); file.close()
-        file = open(self.agent_parameters["personalities"]["personality_sexologist"], "r")
-        self.personality_sexologist = file.read(); file.close()
         
-        # dictionary
-        self.d_personalities = {
-            "main_agent": self.personality_main_agent,
-            "researcher": self.personality_researcher,
-            "coder": self.personality_coder,
-            "psychologist": self.personality_psychologist,
-            "sexologist": self.personality_sexologist
-        }
+        def read_file(path):
+            with open(path, "r") as f:
+                return f.read()
+        
+        self.d_agent_personalities = dict([(k, read_file(self.agent_personalities[k]["personality"])) \
+                                          for k, v in self.agent_personalities.items()])
+        self.d_agent_avatars = dict([(k, self.agent_personalities[k]["avatar"]) \
+                                    for k, v in self.agent_personalities.items()])
+
         self.agent = set_up_agent(self)

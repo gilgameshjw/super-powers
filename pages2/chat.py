@@ -72,7 +72,7 @@ def run_agent_answer(config, prompt, chat_history):
             chat_history=chat_history
         )
     with st.chat_message("assistant", avatar=response["avatar"]):
-        asyncio.run(stream_to_streamlit(response["response"]))  # Stream the response asynchronously
+        asyncio.run(stream_to_streamlit(response["output"]))  # Stream the response asynchronously
     return response
 
 
@@ -95,7 +95,7 @@ def chat(config):
     else:
         st.session_state.messages = []
         response = run_agent_answer(config, "Introduce yourself and what your tools are.", [])
-        st.session_state.messages.append({"role": "assistant", "content": response["response"], "avatar": response["avatar"]})
+        st.session_state.messages.append({"role": "assistant", "content": response["output"], "avatar": response["avatar"]})
 
     # Chat input
     prompt = st.chat_input("Your text here:")
@@ -112,4 +112,4 @@ def chat(config):
         response = run_agent_answer(config, prompt, st.session_state.messages[:config.memory_depth])
 
         # Add assistant message to the chat history
-        st.session_state.messages.append({"role": "assistant", "content": response["response"], "avatar": response["avatar"]})
+        st.session_state.messages.append({"role": "assistant", "content": response["output"], "avatar": response["avatar"]})

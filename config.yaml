@@ -28,17 +28,22 @@ agent:
   memory_depth: 10
   model_llm: "openai"
   personalities:
-    personality_main_agent: prompts/personality_main_agent.txt
-    avatar_main_agent: resources/images/giraffe_0.png
+    main_agent: 
+      personality: prompts/personality_main_agent.txt
+      avatar: resources/images/giraffe_0.png
 
-    personality_coder: prompts/personality_coder.txt
-    avatar_coder: resources/images/coder_0.png
+    coder:
+      personality: prompts/personality_coder.txt
+      avatar: resources/images/coder_0.png
 
-    personality_researcher: prompts/personality_researcher.txt
-    avatar_researcher: resources/images/scientist_0.png
+    researcher:
+      personality: prompts/personality_researcher.txt
+      avatar: resources/images/scientist_0.png
 
-    personality_psychologist: prompts/personality_psychologist.txt
-    avatar_psychologist: resources/images/psychologist_0.png
+    psychologist:
+      personality: prompts/personality_psychologist.txt
+      avatar: resources/images/psychologist_0.png
 
-    personality_sexologist: prompts/personality_sexologist.txt
-    avatar_sexologist: resources/images/sexologist_0.png
+    sexologist:
+      personality: prompts/personality_sexologist.txt
+      avatar: resources/images/sexologist_0.png

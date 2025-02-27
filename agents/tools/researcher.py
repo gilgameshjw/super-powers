@@ -1,10 +1,14 @@
 
+
+
 import time
 import nest_asyncio # required for notebooks
-nest_asyncio.apply()
-
-from gpt_researcher import GPTResearcher
 import asyncio
+nest_asyncio.apply()
+from langchain.chat_models import ChatOpenAI
+
+# using open source library gpt-researcher
+from gpt_researcher import GPTResearcher
 
 from formats.markdown import text_to_markdown
 
@@ -65,3 +69,37 @@ def run_researcher(query: str, report_type: str, mock=True) -> str:
     text_to_markdown(research_report, "tmp/report.md")
 
     return research_report, research_costs, research_time
+
+
+
+
+def tool_researcher(llm: ChatOpenAI, query: str) -> str:
+    """ you are a researcher """
+    report_type = "research_report"
+
+    research_report, research_costs, research_time = run_researcher(prompt, report_type, config.mock)
+    response = "find research below"
+
+    print(response)
+    print(f"costs: {research_costs}")
+    print(f"time: {research_time}")
+        
+    # Save the full report to a temporary file
+    report_file_path = "tmp/report.md"
+    os.makedirs(os.path.dirname(report_file_path), exist_ok=True)  # Ensure the directory exists
+    with open(report_file_path, "w", encoding="utf-8") as f:
+        f.write(research_report)
+        
+    # write research costs and time to chat in dictionary format:
+    d_research = {
+            "status": "completed",
+            "costs": research_costs,
+                "time": research_time
+    }
+
+    return {
+        "research_metadata": d_research,
+        "response": response,
+        "agent": "researcher",
+        "file_data": report_file_path     
+    }
