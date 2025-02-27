@@ -114,7 +114,7 @@ def chat(config):
 
 
     # Set the static background image
-    set_static_background("./resources/images/background_space_savannah.png")
+    # set_static_background("./resources/images/background_space_savannah.png")
 
     # Set up the title and chat history
     st.title("JairGPT")
