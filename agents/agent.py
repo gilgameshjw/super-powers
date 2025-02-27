@@ -1,8 +1,7 @@
 
 from typing import Dict, Any, List, Tuple, Union
 from langchain.agents import Tool
-from langchain.chat_models import ChatOpenAI
-
+from langchain_community.chat_models import ChatOpenAI
 
 from agents.tools.researcher import tool_researcher
 from agents.tools.coder import tool_coder
@@ -35,7 +34,7 @@ def set_up_agent(config):
 
     researcher_tool = Tool(
         name="Researcher",
-        func=lambda query: tool_researcher(llm, query),
+        func=lambda query: tool_researcher(llm, config, query),
         description=config.d_agent_personalities["researcher"]
     )
 

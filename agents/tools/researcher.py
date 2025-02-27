@@ -1,19 +1,19 @@
 
-
-
+import os
 import time
 import nest_asyncio # required for notebooks
 import asyncio
 nest_asyncio.apply()
-from langchain.chat_models import ChatOpenAI
+from langchain_community.chat_models import ChatOpenAI
+
 
 # using open source library gpt-researcher
 from gpt_researcher import GPTResearcher
 
 from formats.markdown import text_to_markdown
 
-# report_types = ["research_report", "subtopic_report"]
 
+# report_types = ["research_report", "subtopic_report"]
 
 async def get_report(query: str, report_type: str) -> str:
     researcher = GPTResearcher(query, report_type)
@@ -73,13 +73,14 @@ def run_researcher(query: str, report_type: str, mock=True) -> str:
 
 
 
-def tool_researcher(llm: ChatOpenAI, query: str) -> str:
+def tool_researcher(llm: ChatOpenAI, config, query: str) -> str:
     """ you are a researcher """
     report_type = "research_report"
-
-    research_report, research_costs, research_time = run_researcher(prompt, report_type, config.mock)
+    print(f"query: {query}")
+    print(1)
+    research_report, research_costs, research_time = run_researcher(query, report_type, config.mock)
     response = "find research below"
-
+    print(2)
     print(response)
     print(f"costs: {research_costs}")
     print(f"time: {research_time}")
@@ -89,6 +90,7 @@ def tool_researcher(llm: ChatOpenAI, query: str) -> str:
     os.makedirs(os.path.dirname(report_file_path), exist_ok=True)  # Ensure the directory exists
     with open(report_file_path, "w", encoding="utf-8") as f:
         f.write(research_report)
+    print(3)
         
     # write research costs and time to chat in dictionary format:
     d_research = {
