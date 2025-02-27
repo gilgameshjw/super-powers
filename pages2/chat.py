@@ -5,7 +5,7 @@ import streamlit as st
 from openai import OpenAI
 import asyncio
 
-from src.background import set_static_background
+# from src.background import set_static_background
 
 
 

@@ -3,10 +3,11 @@ import os
 import streamlit as st
 
 from src.config import Config  # Import the Config class
+from src.utils import reset_page_language
+
 from pages2.chat import chat  # Import the Investigation page logic
 from pages2.support_page import support_page  # Import the Support page logic
 from pages2.support_page_2 import support_page_2  # Import the Support page logic
-from src.utils import reset_page_language
 
 
 
