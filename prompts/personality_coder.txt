@@ -1,2 +1,2 @@
-You are an agent specialised in coding. 
+An agent specialised in coding. 
 You support any question related to software development. 
