@@ -49,8 +49,8 @@ def support_page(config):
     uploaded_file = st.file_uploader("Upload a background image (PNG or JPG)", type=["png", "jpg", "jpeg"])
 
     # Set the background image if a file is uploaded
-    set_background_image_from_file(uploaded_file)
+    #set_background_image_from_file(uploaded_file)
 
     # Add some content to your app
-    st.title("Streamlit App with Dynamic Background Image")
-    st.write("Upload an image using the file uploader above to set it as the background.")
+    #st.title("Streamlit App with Dynamic Background Image")
+    #st.write("Upload an image using the file uploader above to set it as the background.")
