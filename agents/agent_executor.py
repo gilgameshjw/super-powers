@@ -32,6 +32,7 @@ class AgentExecutor:
         :param chat_history: The conversation history to provide context.
         :return: The preprocessed chat history string.
         """
+        print(f"chat_history: {chat_history}")
         return "\n".join([f"role: {h['role']}\ncontent: {h['content']}" for h in chat_history]) \
             if chat_history else "No previous conversation."
     
@@ -48,7 +49,7 @@ class AgentExecutor:
                     f"Agent Tools:\n{self.tools}\n"
                     f"Agent Tools Descriptions:\n{self.tool_descriptions}\n"
                     f"Conversation history:\n{chat_context}\n\n"
-                    f"Query: {query}\n\n"
+                    f"Current Query: {query}\n\n"
                     "Provide the best possible answer based on the query and conversation history."
                 )
         return prompt
@@ -63,17 +64,30 @@ class AgentExecutor:
         # Create a prompt for the LLM to decide the tool
         chat_context = self.preprocess_chat_history(chat_history)
         prompt = (
+            f"Agent Personality:\n{self.personality}\n"
             f"Available tools:\n{self.tool_descriptions}\n\n"
             f"Conversation history:\n{chat_context}\n\n"
             f"Query: {query}\n\n"
-            "Based on the query and conversation history, decide which tool to use. "
+            "Based on the query and conversation history, decide which tool to use and return just the tool name.\n"
             "If none of the tools are applicable, respond with 'None'.\n"
             "Tool name:"
         )
 
         # Invoke the LLM to get the decision
+        print(prompt)
         result = self.llm.invoke(prompt)
         tool_name = result.content.strip()
+        print(f"decide_tool:")
+        print(f"tool_name: {tool_name}")
+        print("-----")
+
+        print(tool_name.strip() in self.tools)
+        print(f"self.tools {self.tools.keys()}")
+        print(1234567)
+        print(tool_name == "Psychologist")
+        # write tool_name to file
+        with open("tool_name.txt", "w") as f:
+            f.write(tool_name)
 
         # Return the tool name if it matches one of the available tools
         if tool_name in self.tools:

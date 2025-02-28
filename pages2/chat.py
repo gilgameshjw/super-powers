@@ -1,12 +1,7 @@
 
 import os
-#from datetime import datetime
 import streamlit as st
-#from openai import OpenAI
 import asyncio
-
-# from src.background import set_static_background
-
 
 
 def generate_response_agent_w_spinner(agent, user_input, chat_history=[]):
@@ -21,7 +16,7 @@ def generate_response_agent_w_spinner(agent, user_input, chat_history=[]):
         print("############################################################")
         print("output:", output)
         print("############################################################")
-    return output #["response"]
+    return output
 
 
 async def stream_response(message, delta_t=0.1):
@@ -39,6 +34,7 @@ async def stream_to_streamlit(response):
     async for line in stream_response(response):
         buffer += line  # Append the new line to the buffer
         placeholder.markdown(buffer)  # Update the placeholder with the accumulated content
+
 
 def handle_file_upload():
     uploaded_file = st.file_uploader("Upload a file (any format)", type=None)  # Allow any file type
@@ -109,13 +105,7 @@ async def display_helper_async(role: str, text: str, avatar_path: str, width: in
 
 
 
-# Chat
 def chat(config):
-
-
-    # Set the static background image
-    # set_static_background("./resources/images/background_space_savannah.png")
-
     # Set up the title and chat history
     st.title("JairGPT")
 
@@ -124,27 +114,38 @@ def chat(config):
         for message in st.session_state.messages[:config.memory_depth]:
             with st.chat_message(message["role"], avatar=message["avatar"]):
                 st.markdown(message["content"])
-            #display_helper(message["role"], message["content"], message["avatar"])
+        # st.markdown("---")
+
     else:
         st.session_state.messages = []
         response = run_agent_answer(config, "Introduce yourself and what your tools are.", [])
-        st.session_state.messages.append({"role": "assistant", "content": response["output"], "avatar": response["avatar"]})
+        # st.session_state.messages.append({"role": "assistant", "content": response["output"], "avatar": response["avatar"]})
 
     # Chat input
     prompt = st.chat_input("Your text here:")
     # File Upload
-    handle_file_upload()
-
+    # handle_file_upload()
     if prompt:
         # Add user message to the chat history
-        st.session_state.messages.append({"role": "user", "content": prompt, "avatar": "./resources/images/user_0.png"})
-        
+        st.session_state.messages.append({"role": "user", "content": prompt, "avatar": "./resources/images/user_0.png"}) 
         with st.chat_message("user", avatar="./resources/images/user_0.png"):
             st.markdown(prompt)
-        #display_helper("user", prompt, "./resources/images/user_0.png")
+    response = run_agent_answer(config, prompt, st.session_state.messages[:config.memory_depth])
+    if "research_metadata" in response:
+        st.write(response["research_metadata"])
+    
+    # Check if the response contains file data and create a download button
+    if "file_data" in response:
+        file_path = response["file_data"]
+        if file_path and os.path.exists(file_path):
+            # st.warning("File not found or empty.")
+            with open(file_path, "rb") as file:
+                st.download_button(
+                    label="Download File",
+                    data=file,
+                    file_name=file_path.split("/")[-1],  # Extract file name from path
+                    mime="application/octet-stream",  # Generic MIME type
+                )
+    # Add assistant message to the chat history
+    st.session_state.messages.append({"role": "assistant", "content": response["output"], "avatar": response["avatar"]})
 
-        # run_agent_answer()
-        response = run_agent_answer(config, prompt, st.session_state.messages[:config.memory_depth])
-
-        # Add assistant message to the chat history
-        st.session_state.messages.append({"role": "assistant", "content": response["output"], "avatar": response["avatar"]})

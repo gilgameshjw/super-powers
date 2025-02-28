@@ -75,28 +75,43 @@ def run_researcher(query: str, report_type: str, mock=True) -> str:
 
 def tool_researcher(llm: ChatOpenAI, config, query: str) -> str:
     """ you are a researcher """
+    prompt = f"""
+If you find a research or question in the user query, return a sentence with the question but starting with research.
+
+Otherwise, ask the user to provide more information.
+
+user query:
+{query}
+"""
+    result = llm.invoke(prompt)
+
     report_type = "research_report"
-    print(f"query: {query}")
-    print(1)
-    research_report, research_costs, research_time = run_researcher(query, report_type, config.mock)
-    response = "find research below"
-    print(2)
-    print(response)
-    print(f"costs: {research_costs}")
-    print(f"time: {research_time}")
+
+    query = result.content.strip()
+    if query.startswith("research"):
+        # query = query[8:].strip()
+        research_report, research_costs, research_time = run_researcher(query, report_type, config.mock)
+        response = f"find below a detailed answer to your question: \n{query}"
+        print(f"costs: {research_costs}")
+        print(f"time: {research_time}")
+        # Save the full report to a temporary file
+        report_file_path = "tmp/report.md"
+        os.makedirs(os.path.dirname(report_file_path), exist_ok=True)  # Ensure the directory exists
+        with open(report_file_path, "w", encoding="utf-8") as f:
+            f.write(research_report)
         
-    # Save the full report to a temporary file
-    report_file_path = "tmp/report.md"
-    os.makedirs(os.path.dirname(report_file_path), exist_ok=True)  # Ensure the directory exists
-    with open(report_file_path, "w", encoding="utf-8") as f:
-        f.write(research_report)
-    print(3)
+    else:
+        response = query
+        report_file_path = None
+        research_costs = 0.0
+        research_time = 0.0
+
         
     # write research costs and time to chat in dictionary format:
     d_research = {
-            "status": "completed",
-            "costs": research_costs,
-                "time": research_time
+        "status": "completed",
+        "costs": research_costs,
+        "time": research_time
     }
 
     return {

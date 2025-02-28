@@ -22,13 +22,13 @@ def set_up_agent(config):
 
     psychologist_tool = Tool(
         name="Psychologist",
-        func=lambda query: tool_psychologist(llm, query),
+        func=lambda query: tool_psychologist(llm, query, config.d_agent_personalities["psychologist"]),
         description=config.d_agent_personalities["psychologist"]
     )
 
     sexologist_tool = Tool(
         name="Sexologist",
-        func=lambda query: tool_sexologist(llm, query),
+        func=lambda query: tool_sexologist(llm, query, config.d_agent_personalities["sexologist"]),
         description=config.d_agent_personalities["sexologist"]
     )
 
@@ -40,13 +40,13 @@ def set_up_agent(config):
 
     coder_tool = Tool(
         name="Coder",
-        func=lambda query: tool_coder(llm, query),
+        func=lambda query: tool_coder(llm, query, config.d_agent_personalities["coder"]),
         description=config.d_agent_personalities["coder"]
     )
 
     drdoc_tool = Tool(
         name="DrDoc",
-        func=lambda query: tool_drdoc(llm, query),
+        func=lambda query: tool_drdoc(llm, query, config.d_agent_personalities["drdoc"]),
         description=config.d_agent_personalities["drdoc"]
     )
 
